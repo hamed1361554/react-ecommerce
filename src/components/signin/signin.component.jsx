@@ -1,15 +1,11 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 
-import { getRedirectResult } from 'firebase/auth';
-import { auth,
+import {
     signInWithGooglePopup,
-    signInWithGoogleRedirection,
-    createUserDocumentFromAuth,
     signInAuthUserWithEmailAndPassword } from '../../utils/firebase/firebase.utils';
 
 import FormInput from '../form-input/form-input.component';
 import Button from '../button/button.component';
-import { UserContext } from '../../context/user.context';
 import './signin.styles.scss';
 
 
@@ -31,7 +27,6 @@ const SignInForm = () => {
 
     const [formFields, setFormFields] = useState(defaultFields);
     const {email, password} = formFields;
-    const { currentUser, setCurrentUser } = useContext(UserContext);
 
     const resetFormFields = () => {
         setFormFields(defaultFields);
@@ -47,7 +42,6 @@ const SignInForm = () => {
 
         try {
             const { user } = await signInAuthUserWithEmailAndPassword(email, password);
-            setCurrentUser(user);
             resetFormFields();
         }catch (error) {
             switch (error.code) {
@@ -64,8 +58,7 @@ const SignInForm = () => {
     };
 
     const logGoogleUser = async (event) => {
-        const { user } = await signInWithGooglePopup();
-        await createUserDocumentFromAuth(user);
+        await signInWithGooglePopup();
     };
 
     return (
